@@ -9,4 +9,4 @@ To use this template, your computer needs:
   * Flask-WTF
   * Cryptography
   * Flask-SqlAlchemy
-  * mysql-connector-python-8.0.13 (https://dev.mysql.com/downloads/connector/python/)
+  
