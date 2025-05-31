@@ -1,0 +1,51 @@
+{% extends 'index.html' %}
+
+    {% block body %}
+    {% with messages = get_flashed_messages () %}
+        {% if messages %}
+            {% for msg in messages %}
+            <p>{{msg}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+  <div class="user-name">
+      <h1> Welcome {{user}}</h1>
+  </div>
+  
+
+  <div class="container">
+    <div class="search-bar">
+      <input type="text" >
+    </div>
+
+    <!-- Password Entries -->
+    {% for passwords in password %}
+    <div class="password-entry">
+      <div class="password-info">
+        <strong>{{ passwords.name }}</strong>
+        <span>Email: {{ passwords.email }}</span><br>
+        <span>Password: ••••••••• </span>
+      </div>
+      <div class="password-actions">
+          <form action="/view/{{ passwords.id }}" method="GET">
+
+              <button class="view-btn">View</button>
+          </form>
+
+          <form action="/delete/{{ passwords.id }}" method="GET">
+
+              <button class="delete-btn">Delete</button>
+          </form>
+        
+      </div>
+    </div>
+      {% endfor %}
+      
+
+    
+
+    <!-- More entries would go here -->
+
+  </div>
+    {% endblock %}
+

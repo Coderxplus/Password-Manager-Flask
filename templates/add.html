@@ -1,0 +1,33 @@
+
+{% extends "index.html" %}
+
+{% block body %}
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for msg in messages %}
+            <p class="flash-message">{{ msg }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="add-container"> 
+        <form method="post">
+            {{ form.csrf_token() }}
+            <Label for="name">Name</Label>
+            <input type="text"  name="name" placeholder="Enter the name " required>
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+                <input id="password" value="{{ password }}" type="password" name="password" placeholder="Enter the password" required>
+                <span class="eye-icon" onclick="togglePassword()">👁️</span>
+            </div>
+            <Label for="email">Email</Label>
+            <input type="email"  name="email" placeholder="Enter the password" required>
+            <button>Submit</button>
+        </form>
+        
+    </div>
+{% endblock %}
+

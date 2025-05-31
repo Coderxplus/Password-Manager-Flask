@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='loginStyle.css') }}">
+    <title>Password Manager</title>
+</head>
+<body>
+  
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for msg in messages %}
+          <p class="flash-message">{{ msg }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+
+    <div class="login-container">
+        <h1>Signup</h1>
+        <form  method="post">
+            {{ form.csrf_token() }}
+            <p> {{ form.name.label}} {{ form.name() }}</p>
+            <p> {{ form.email.label}} {{ form.email() }}</p>
+            <p> {{ form.password.label}} {{ form.password() }}</p>
+            <p> {{ form.confirm_password.label}} {{ form.confirm_password() }}</p>
+            <input type="submit" value="Signup">
+            <a href="/signin">Already have an account</a>
+        </form>
+        
+    </div>
+</body>
+</html>
