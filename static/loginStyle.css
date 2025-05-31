@@ -1,0 +1,121 @@
+* {
+     box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: white;
+    padding: 40px 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    align-items: center;
+}
+
+.login-container h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+form {
+    display: block;
+    align-items: center; /* Center form fields horizontally */
+}
+
+
+label {
+    display: block;
+    margin-top: 20px;
+    font-weight: bold;
+}
+.login-container a {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+}
+.login-container a:hover {
+    text-decoration: underline;
+}
+input[type="text"],
+input[type="password"] {
+    width: max-content;
+    padding: 10px;
+    padding-right: 300px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+input[type="submit"] {
+    display: block;
+    margin: 25px auto 0 auto; /* Top margin + auto left/right centers it */
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px; /* Optional: makes button narrower */
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #235183;
+}
+
+.flash-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* allows clicks through the container */
+}
+
+.flash-message {
+  background-color: #e8f0fe;
+  color: #1a3e72;
+  border-left: 6px solid #4285f4;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  animation: fadeSlideIn 0.4s ease-out;
+  pointer-events: auto; /* allows interaction if needed */
+}
+
+/* Slide in from top animation */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
