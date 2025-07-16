@@ -226,6 +226,8 @@ def signin():
             print(f"Error: {e}")
             return redirect(url_for('signin'))
         
+        
+
         if  check_username is False:
             print("Could not find username in database")
             return redirect(url_for('signin'))
@@ -241,6 +243,7 @@ def signin():
             flash("Login successful!", "success")
             session['user_id'] = check_username.id
             return redirect(url_for('home'))
+
         
     return render_template("login.html", form=form)
 
