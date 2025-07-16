@@ -41,12 +41,20 @@ header {
 /* Title style */
 header h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 34px;
   font-weight: bold;
   color: #ecf0f1;
   flex-grow: 1;
   padding-left: 10px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-left: 100px;
+   background: linear-gradient(90deg, #ffffff, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(0, 255, 224, 0.3),
+                0 0 20px rgba(0, 122, 255, 0.2);
+  letter-spacing: 2px;
+  position: relative;
 }
 
 /* Subtitle aligned to the right */

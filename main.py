@@ -3,34 +3,48 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import string
 import random
 from cryptography.fernet import Fernet
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
+import os 
+
+
+load_dotenv(".env")
+
+USER = os.getenv("user")
+PASSWORD = os.getenv("password")
+HOST = os.getenv("host")
+PORT = os.getenv("port")
+DBNAME = os.getenv("dbname")
 
 
 
+
+
+
+DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
 
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+app.config["SQLALCHEMY_DATABASE_URI"] =  DATABASE_URL
 db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = 'secretkey'
 app.permanent_session_lifetime = timedelta(days=5)
 csrf = CSRFProtect(app)
 
 
-
-  
-
+#function for generate password 
 def generate_password():
     password = random.choices(string.ascii_letters+string.digits+string.punctuation, k=13)
     return "".join(password)
 
 
+#function for encrypting the password  using cryptography
 def encrypt_password(password):
     with open("key/key.key", 'r') as f:
         key = f.read()
@@ -38,6 +52,7 @@ def encrypt_password(password):
     cipher_text = fi.encrypt(password)
     return cipher_text
 
+#function for decrypting the password  using cryptography
 def decrypt_password(cipher_text):
     with open("key/key.key", 'r') as f:
         key = f.read()
@@ -49,7 +64,7 @@ def decrypt_password(cipher_text):
     
 
 
-
+#SQL alchemy user table
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(25), nullable=False)
@@ -60,6 +75,8 @@ class User(db.Model):
 
     def __repr__(self):
         return '<Name %r>' % self.name
+
+#SQL ALCHEMY  Password table
 class Password(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), nullable=False)
@@ -74,12 +91,14 @@ with app.app_context():
         db.create_all()  # Create tables
 
 
+#Registration form  Flaskwtf 
 class RegistrationForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired(), Length(min=5, max=25, message='Username must be in 5 to 25 characters')])
     password = PasswordField('Password', validators=[InputRequired()])
     confirm_password = PasswordField('ConfirmPassword', validators=[InputRequired()])
     email = StringField('Email', validators=[InputRequired()])
-    
+
+#Addpassword form Flaskwtf 
 class AddPasswordForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired(), Length(min=5, max=25, message='Username must be in 5 to 25 characters')])
     password = PasswordField('Password', default="Helloworld")
@@ -89,6 +108,7 @@ class AddPasswordForm(FlaskForm):
     def __repr__(self):
         return f"Name : {self.name}, Password:{self.password}"
 
+#Login form Flaskwtf
 class LoginForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired(), Length(min=5, max=25, message='Username must be in 5 to 25 characters')])
     password = PasswordField('Password', validators=[InputRequired()])
@@ -130,7 +150,9 @@ def add():
         
 
         print("Name: ",name, "password: ", password, "email: ", email)
-        add_password = Password(name=name, password=encrypt_password(password.encode("utf-8")), email=email, user_id=user_id)
+        encrypted_password = encrypt_password(password.encode("utf-8"))
+        print("Encrypted Password: ", encrypted_password)
+        add_password = Password(name=name, password=encrypted_password.decode(), email=email, user_id=user_id)
         db.session.add(add_password)
         db.session.commit()
         return redirect(url_for("home"))
@@ -152,10 +174,11 @@ def edit(response):
         name = request.form['name']
         password = request.form['password']
         email = request.form['email']
-        add_password = Password(name=name, password=encrypt_password(password.encode("utf-8")), email=email, user_id=user_id)
         data = Password.query.filter_by(id=response, user_id=session.get("user_id")).first_or_404()
-        db.session.delete(data)
-        db.session.add(add_password)
+        data.name = name
+        data.password = encrypt_password(password.encode("utf-8")).decode()
+        data.email = email
+        data.user_id = user_id
         db.session.commit()
         return redirect(url_for("home"))
     return render_template("edit.html", password=password, decrypted_password=decrypted_password, form=form)
@@ -199,12 +222,10 @@ def signin():
         try:
             check_password = check_password_hash(check_username.password, password)
         except AttributeError as e:
-            flash("An error occurred while logging in. Please try again.", "danger")
+            flash("Invalid details", "danger")
             print(f"Error: {e}")
             return redirect(url_for('signin'))
         
-        
-
         if  check_username is False:
             print("Could not find username in database")
             return redirect(url_for('signin'))
@@ -220,8 +241,6 @@ def signin():
             flash("Login successful!", "success")
             session['user_id'] = check_username.id
             return redirect(url_for('home'))
-        
-
         
     return render_template("login.html", form=form)
 
